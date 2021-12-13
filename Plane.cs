@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -14,7 +14,7 @@ namespace Time_Pilot
 {
     class Plane
     {
-        public Vector2 pos, vel, size, mPos;
+        public Vector2 pos, vel, size;
         public Texture2D tex;
         public float rad;       
         public Plane()
@@ -22,11 +22,16 @@ namespace Time_Pilot
             
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
             Vector2 origin = new Vector2(tex.Bounds.Width / 2, tex.Bounds.Height / 2);
             Debug.Print(origin.X + " " + origin.Y);
-            spriteBatch.Draw(tex, new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y), null, Color.White, rad, origin, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, new Rectangle((int)(pos.X + shift.X), (int)(pos.Y + shift.Y), (int)size.X, (int)size.Y), null, Color.White, rad, origin, SpriteEffects.None, 0f);
+        }
+
+        public void Update()
+        {
+            pos += vel;
         }
     }
 }

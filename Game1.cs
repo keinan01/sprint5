@@ -19,8 +19,10 @@ namespace Time_Pilot
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
+        Enemy other;
+        
         Texture2D playerTex;
-        Vector2 screen, mousePosition, dPos;
+        Vector2 screen, cameraPos;
         float rotationRadians = 0f;
         MouseState mouseState;
         public Game1()
@@ -31,7 +33,7 @@ namespace Time_Pilot
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredBackBufferWidth = 900;
+            graphics.PreferredBackBufferWidth = 1000;
             graphics.PreferredBackBufferHeight = 1000;
             graphics.ApplyChanges();
         }
@@ -62,6 +64,7 @@ namespace Time_Pilot
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerTex = this.Content.Load<Texture2D>("player");
             player = new Player(playerTex, screen / 2, rotationRadians);
+            other = new Enemy(playerTex, screen / 2, rotationRadians);
             // TODO: use this.Content to load your game content here
         }
 
@@ -85,13 +88,12 @@ namespace Time_Pilot
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-            
+
             // TODO: Add your update logic here
+            player.Update();
+            other.Update();
 
-            mousePosition = new Vector2(mouseState.X, mouseState.Y);
-            dPos = player.pos - mousePosition;
-
-            player.rad = rotationRadians = (float)Math.Atan2(dPos.Y, dPos.X);
+            player.cameraPos = cameraPos = new Vector2(-player.pos.X + GraphicsDevice.Viewport.Width / 2, -player.pos.Y + GraphicsDevice.Viewport.Height / 2);
 
             base.Update(gameTime);
         }
@@ -107,7 +109,8 @@ namespace Time_Pilot
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player.Draw(spriteBatch);
+            player.Draw(spriteBatch, cameraPos);
+            other.Draw(spriteBatch, cameraPos);
             spriteBatch.End();
             base.Draw(gameTime);
         }

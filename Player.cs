@@ -13,13 +13,29 @@ namespace Time_Pilot
 {
     class Player : Plane
     {
+        public Vector2 cameraPos;
 
         public Player(Texture2D tex, Vector2 pos, float rad)
         {
             base.tex = tex;
-            base.size = new Vector2(72, 72);
+            size = new Vector2(72, 72);
             base.pos = pos;
             base.rad = rad;
+            vel = new Vector2(0, 0);
+        }
+        public new void Update()
+        {
+            MouseState mouseState = Mouse.GetState();
+
+            Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y) - cameraPos;
+
+            Vector2 dPos = this.pos - mousePosition;
+
+            rad = (float)Math.Atan2(dPos.Y, dPos.X);
+
+            vel = -new Vector2((float)Math.Cos(rad), (float)Math.Sin(rad)) * 5;
+
+            base.Update();
         }
     }
 }
