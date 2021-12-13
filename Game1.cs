@@ -20,7 +20,7 @@ namespace Time_Pilot
         SpriteBatch spriteBatch;
         Player player;
         List<Plane> planes;
-        
+
         Texture2D playerTex;
         Vector2 screen, cameraPos;
         float rotationRadians = 0f;
@@ -29,7 +29,7 @@ namespace Time_Pilot
         {
             this.Window.AllowUserResizing = true;
 
-            
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -65,6 +65,11 @@ namespace Time_Pilot
             playerTex = this.Content.Load<Texture2D>("player");
             player = new Player(playerTex, screen / 2, rotationRadians);
             planes = new Plane[] { player, new Enemy(playerTex, screen / 2, rotationRadians) }.ToList();
+            for (int i = 0; i < 10; i++)
+            {
+                planes.Add(new Enemy(playerTex, screen / 2, rotationRadians));
+            }
+            
             // TODO: use this.Content to load your game content here
         }
 
@@ -106,7 +111,7 @@ namespace Time_Pilot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
