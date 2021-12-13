@@ -18,11 +18,22 @@ namespace Time_Pilot
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        Player player;
+        Texture2D playerTex;
+        Vector2 screen, mousePosition, dPos;
+        float rotationRadians = 0f;
+        MouseState mouseState;
         public Game1()
         {
+            this.Window.AllowUserResizing = true;
+
+            
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 900;
+            graphics.PreferredBackBufferHeight = 1000;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -34,6 +45,9 @@ namespace Time_Pilot
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            this.IsMouseVisible = true;
+
+            screen = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
             base.Initialize();
         }
@@ -46,7 +60,8 @@ namespace Time_Pilot
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            playerTex = this.Content.Load<Texture2D>("player");
+            player = new Player(playerTex, screen / 2, rotationRadians);
             // TODO: use this.Content to load your game content here
         }
 
@@ -66,11 +81,17 @@ namespace Time_Pilot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            mouseState = Mouse.GetState();
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
+            
             // TODO: Add your update logic here
+
+            mousePosition = new Vector2(mouseState.X, mouseState.Y);
+            dPos = player.pos - mousePosition;
+
+            player.rad = rotationRadians = (float)Math.Atan2(dPos.Y, dPos.X);
 
             base.Update(gameTime);
         }
@@ -81,10 +102,13 @@ namespace Time_Pilot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
+            player.Draw(spriteBatch);
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
