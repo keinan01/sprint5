@@ -19,7 +19,7 @@ namespace Time_Pilot
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
-        Enemy other;
+        List<Plane> planes;
         
         Texture2D playerTex;
         Vector2 screen, cameraPos;
@@ -64,7 +64,7 @@ namespace Time_Pilot
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerTex = this.Content.Load<Texture2D>("player");
             player = new Player(playerTex, screen / 2, rotationRadians);
-            other = new Enemy(playerTex, screen / 2, rotationRadians);
+            planes = new Plane[] { player, new Enemy(playerTex, screen / 2, rotationRadians) }.ToList();
             // TODO: use this.Content to load your game content here
         }
 
@@ -90,8 +90,10 @@ namespace Time_Pilot
                 this.Exit();
 
             // TODO: Add your update logic here
-            player.Update();
-            other.Update();
+            for (int i = 0; i < planes.Count; i++)
+            {
+                planes[i].Update();
+            }
 
             player.cameraPos = cameraPos = new Vector2(-player.pos.X + GraphicsDevice.Viewport.Width / 2, -player.pos.Y + GraphicsDevice.Viewport.Height / 2);
 
@@ -109,8 +111,10 @@ namespace Time_Pilot
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player.Draw(spriteBatch, cameraPos);
-            other.Draw(spriteBatch, cameraPos);
+            for (int i = 0; i < planes.Count; i++)
+            {
+                planes[i].Draw(spriteBatch, cameraPos);
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }

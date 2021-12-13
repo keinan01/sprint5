@@ -23,7 +23,7 @@ namespace Time_Pilot
             base.rad = rad;
             vel = new Vector2(0, 0);
         }
-        public new void Update()
+        public override void Update()
         {
             MouseState mouseState = Mouse.GetState();
 

@@ -29,7 +29,7 @@ namespace Time_Pilot
             spriteBatch.Draw(tex, new Rectangle((int)(pos.X + shift.X), (int)(pos.Y + shift.Y), (int)size.X, (int)size.Y), null, Color.White, rad, origin, SpriteEffects.None, 0f);
         }
 
-        public void Update()
+        public virtual void Update()
         {
             pos += vel;
         }
