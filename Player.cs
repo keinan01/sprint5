@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -17,6 +17,7 @@ namespace Time_Pilot
 
         public Player(Texture2D tex, Vector2 pos, float rad)
         {
+            base.colour = Color.White;
             base.tex = tex;
             size = new Vector2(72, 72);
             base.pos = pos;
