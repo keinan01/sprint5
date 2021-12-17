@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace Time_Pilot
 {
@@ -20,13 +21,13 @@ namespace Time_Pilot
         SpriteBatch spriteBatch;
         Player player;
         List<Plane> planes;
+
         Texture2D bg;
-        Rectangle bgSize;
         Texture2D playerTex;
-        Vector2 screen, cameraPos, bgPos;
+        Texture2D bullet;
+        Vector2 screen, cameraPos;
         float rotationRadians = 0f;
         MouseState mouseState;
-
         List<Background> bgArray = new List<Background>();
         public Game1()
         {
@@ -51,9 +52,9 @@ namespace Time_Pilot
         {
             // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
-            
+            Plane.game = this;
             screen = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            
+
             base.Initialize();
         }
 
@@ -67,13 +68,14 @@ namespace Time_Pilot
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerTex = this.Content.Load<Texture2D>("player");
             bg = this.Content.Load<Texture2D>("bg");
-            player = new Player(playerTex, screen / 2, rotationRadians);
+            bullet = this.Content.Load<Texture2D>("bullet");
+            Plane.player = player = new Player(playerTex, screen / 2, rotationRadians);
             planes = new Plane[] { player, new Enemy(playerTex, screen / 2, rotationRadians) }.ToList();
             for (int i = 0; i < 10; i++)
             {
                 planes.Add(new Enemy(playerTex, screen / 2, rotationRadians));
             }
-            bgArray.Add(new Background(bg, new Vector2(0, 0), screen));
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -104,13 +106,24 @@ namespace Time_Pilot
                 planes[i].Update();
             }
 
-            player.cameraPos = cameraPos = new Vector2(-player.pos.X + GraphicsDevice.Viewport.Width / 2, -player.pos.Y + GraphicsDevice.Viewport.Height / 2);
-            bgArray[0].bgPos = cameraPos;
+            bgArray = new List<Background>();
 
+            player.cameraPos = cameraPos = new Vector2(-player.pos.X + GraphicsDevice.Viewport.Width / 2, -player.pos.Y + GraphicsDevice.Viewport.Height / 2);
+
+            bgArray.Add(new Background(bg, new Vector2((float)Math.Floor(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Floor(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
+            bgArray.Add(new Background(bg, new Vector2((float)Math.Ceiling(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Floor(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
+            bgArray.Add(new Background(bg, new Vector2((float)Math.Floor(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Ceiling(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
+            bgArray.Add(new Background(bg, new Vector2((float)Math.Ceiling(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Ceiling(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
             
 
+            for (int i = planes.Count - 1; i >= 0; i--)
+            {
+                if (planes[i].removed)
+                {
+                    planes.RemoveAt(i);
+                }
+            }
 
-            bgArray[0].bgSize = new Rectangle((int)bgPos.X, (int)bgPos.Y, (int)screen.X * 2, (int)screen.Y * 2);
             base.Update(gameTime);
         }
 
@@ -125,13 +138,21 @@ namespace Time_Pilot
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            bgArray[0].Draw(spriteBatch);
+            for (int i = 0; i < bgArray.Count; i++)
+            {
+                bgArray[i].Draw(spriteBatch, cameraPos);
+            }
             for (int i = 0; i < planes.Count; i++)
             {
                 planes[i].Draw(spriteBatch, cameraPos);
             }
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void Shoot(Vector2 pos, float rad)
+        {
+            planes.Add(new Projectile(bullet, pos, rad));
         }
     }
 }

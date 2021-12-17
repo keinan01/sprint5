@@ -14,6 +14,9 @@ namespace Time_Pilot
     class Player : Plane
     {
         public Vector2 cameraPos;
+        int cooldown = 0;
+        int reload = 10;
+
 
         public Player(Texture2D tex, Vector2 pos, float rad)
         {
@@ -35,6 +38,13 @@ namespace Time_Pilot
             rad = (float)Math.Atan2(dPos.Y, dPos.X);
 
             vel = -new Vector2((float)Math.Cos(rad), (float)Math.Sin(rad)) * 5;
+
+            if(mouseState.LeftButton == ButtonState.Pressed && cooldown >= reload)
+            {
+                game.Shoot(pos, rad);
+                cooldown = 0;
+            }
+            cooldown++;
 
             base.Update();
         }

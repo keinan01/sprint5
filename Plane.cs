@@ -18,6 +18,9 @@ namespace Time_Pilot
         public Texture2D tex;
         public Color colour;
         public float rad;
+        public static Game1 game;
+        public bool removed = false;
+        public static Plane player;
         public Plane()
         {
 
@@ -26,7 +29,6 @@ namespace Time_Pilot
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
             Vector2 origin = new Vector2(tex.Bounds.Width / 2, tex.Bounds.Height / 2);
-            Debug.Print(origin.X + " " + origin.Y);
             spriteBatch.Draw(tex, new Rectangle((int)(pos.X + shift.X), (int)(pos.Y + shift.Y), (int)size.X, (int)size.Y), null, colour, rad, origin, SpriteEffects.None, 0f);
         }
 

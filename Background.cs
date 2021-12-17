@@ -16,16 +16,20 @@ namespace Time_Pilot
         Texture2D bg;
         public Rectangle bgSize;
         public Vector2 bgPos;
+        public Vector2 screen;
+
 
         public Background(Texture2D bgTex, Vector2 bgPos, Vector2 screen)
         {
             this.bg = bgTex;
             this.bgPos = bgPos;
-            bgSize = new Rectangle((int)bgPos.X, (int)bgPos.Y, (int)screen.X * 2, (int)screen.Y * 2);
+            this.screen = screen;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
+
+            bgSize = new Rectangle((int)(bgPos.X + shift.X), (int)(bgPos.Y + shift.Y), (int)screen.X * 2, (int)screen.Y * 2);
 
             spriteBatch.Draw(bg, bgSize, Color.White);
 
