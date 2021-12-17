@@ -21,7 +21,7 @@ namespace Time_Pilot
         SpriteBatch spriteBatch;
         Player player;
         List<Plane> planes;
-
+        SpriteFont font;
         Texture2D bg;
         Texture2D playerTex;
         Texture2D bullet;
@@ -72,8 +72,8 @@ namespace Time_Pilot
             bg = this.Content.Load<Texture2D>("bg");
             bullet = this.Content.Load<Texture2D>("bullet");
             Plane.player = player = new Player(playerTex, screen / 2, rotationRadians);
-            planes = new Plane[] { player}.ToList();
-            
+            planes = new Plane[] { player }.ToList();
+            font = this.Content.Load<SpriteFont>("SpriteFont1");
 
             // TODO: use this.Content to load your game content here
         }
@@ -118,6 +118,7 @@ namespace Time_Pilot
                     {
                         planes[i].removed = true;
                         planes[j].removed = true;
+                        player.points += 100;
                     }
                 }
             }
@@ -137,6 +138,7 @@ namespace Time_Pilot
                 if (planes[i].removed)
                 {
                     planes.RemoveAt(i);
+                    
                 }
             }
 
@@ -162,6 +164,8 @@ namespace Time_Pilot
             {
                 planes[i].Draw(spriteBatch, cameraPos);
             }
+            spriteBatch.DrawString(font, player.points.ToString(), new Vector2(0, 0), Color.White);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }

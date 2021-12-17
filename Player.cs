@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -16,7 +16,7 @@ namespace Time_Pilot
         public Vector2 cameraPos;
         int cooldown = 0;
         int reload = 10;
-
+        public int points;
 
         public Player(Texture2D tex, Vector2 pos, float rad)
         {
@@ -27,7 +27,7 @@ namespace Time_Pilot
             base.rad = rad;
             friendly = true;
             isBullet = false;
-
+            points = 0;
             vel = new Vector2(0, 0);
         }
         public override void Update()
@@ -42,7 +42,7 @@ namespace Time_Pilot
 
             vel = -new Vector2((float)Math.Cos(rad), (float)Math.Sin(rad)) * 5;
 
-            if(mouseState.LeftButton == ButtonState.Pressed && cooldown >= reload)
+            if (mouseState.LeftButton == ButtonState.Pressed && cooldown >= reload)
             {
                 game.Shoot(pos, rad, true);
                 cooldown = 0;
