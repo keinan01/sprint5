@@ -31,7 +31,7 @@ namespace Time_Pilot
             double a = (rad % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
 
             double b = baseAng;
-            if ((player.pos - pos).Length() < 500)
+            if ((player.pos - pos).Length() < 500 && !player.removed)
             {
             b = Math.Atan2((pos - player.pos).Y, (pos - player.pos).X);
             }
