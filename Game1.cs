@@ -29,6 +29,7 @@ namespace Time_Pilot
         float rotationRadians = 0f;
         MouseState mouseState;
         List<Background> bgArray = new List<Background>();
+        int enemySpawnCooldown;
         public Game1()
         {
             this.Window.AllowUserResizing = true;
@@ -54,6 +55,7 @@ namespace Time_Pilot
             this.IsMouseVisible = true;
             Plane.game = this;
             screen = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            enemySpawnCooldown = 0;
 
             base.Initialize();
         }
@@ -70,11 +72,8 @@ namespace Time_Pilot
             bg = this.Content.Load<Texture2D>("bg");
             bullet = this.Content.Load<Texture2D>("bullet");
             Plane.player = player = new Player(playerTex, screen / 2, rotationRadians);
-            planes = new Plane[] { player, new Enemy(playerTex, screen / 2, rotationRadians) }.ToList();
-            for (int i = 0; i < 10; i++)
-            {
-                planes.Add(new Enemy(playerTex, screen / 2, rotationRadians));
-            }
+            planes = new Plane[] { player}.ToList();
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -95,6 +94,15 @@ namespace Time_Pilot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (enemySpawnCooldown > 10)
+            {
+                rotationRadians = (float)(Enemy.rnd.NextDouble() * Math.PI * 2);
+                float rotationRadians2 = (float)(Enemy.rnd.NextDouble() * Math.PI * 2);
+                planes.Add(new Enemy(playerTex, player.pos + new Vector2((float)Math.Cos(rotationRadians2), (float)Math.Sin(rotationRadians2)) * 1500, rotationRadians));
+                enemySpawnCooldown = 0;
+            }
+            enemySpawnCooldown++;
+
             mouseState = Mouse.GetState();
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -104,6 +112,14 @@ namespace Time_Pilot
             for (int i = 0; i < planes.Count; i++)
             {
                 planes[i].Update();
+                for (int j = 0; j < planes.Count; j++)
+                {
+                    if (planes[i].collides(planes[j]) && i != j && !(planes[i].isBullet && planes[j].isBullet) && planes[i].friendly != planes[j].friendly)
+                    {
+                        planes[i].removed = true;
+                        planes[j].removed = true;
+                    }
+                }
             }
 
             bgArray = new List<Background>();
@@ -114,7 +130,7 @@ namespace Time_Pilot
             bgArray.Add(new Background(bg, new Vector2((float)Math.Ceiling(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Floor(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
             bgArray.Add(new Background(bg, new Vector2((float)Math.Floor(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Ceiling(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
             bgArray.Add(new Background(bg, new Vector2((float)Math.Ceiling(-cameraPos.X / screen.X / 2) * screen.X * 2, (float)Math.Ceiling(-cameraPos.Y / screen.Y / 2) * screen.Y * 2), screen));
-            
+
 
             for (int i = planes.Count - 1; i >= 0; i--)
             {
@@ -150,9 +166,9 @@ namespace Time_Pilot
             base.Draw(gameTime);
         }
 
-        public void Shoot(Vector2 pos, float rad)
+        public void Shoot(Vector2 pos, float rad, bool friendly)
         {
-            planes.Add(new Projectile(bullet, pos, rad));
+            planes.Add(new Projectile(bullet, pos, rad, friendly));
         }
     }
 }

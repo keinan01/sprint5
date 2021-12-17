@@ -10,23 +10,28 @@ namespace Time_Pilot
 {
     class Enemy : Plane
     {
-        static Random rnd = new Random();
+        public static Random rnd = new Random();
         float baseAng;
+        int reload = 1000;
+        int cooldown = rnd.Next(1000);
+
         public Enemy(Texture2D tex, Vector2 pos, float rad)
         {
             base.tex = tex;
             base.size = new Vector2(72, 72);
-            base.pos = new Vector2(rnd.Next(0, 900), rnd.Next(0, 1000));
+            base.pos = pos;
             base.rad = rad;
             baseAng = rad;
             base.colour = new Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+            friendly = false;
+            isBullet = false;
         }
         public override void Update()
         {
             double a = (rad % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
 
             double b = baseAng;
-            if ((player.pos - pos).Length() < 200)
+            if ((player.pos - pos).Length() < 500)
             {
             b = Math.Atan2((pos - player.pos).Y, (pos - player.pos).X);
             }
@@ -40,6 +45,18 @@ namespace Time_Pilot
                 rad -= (float)Math.PI / 100;
             }
             vel = -new Vector2((float)Math.Cos(rad), (float)Math.Sin(rad)) * 2;
+
+            if ((player.pos - pos).Length() > 2000)
+            {
+                removed = true;
+            }
+
+            if(cooldown >= reload)
+            {
+                game.Shoot(pos, rad, false);
+                cooldown = 0;
+            }
+            cooldown++;
 
             base.Update();
         }

@@ -14,13 +14,16 @@ namespace Time_Pilot
     class Projectile : Plane
     {
 
-        public Projectile(Texture2D tex, Vector2 pos, float rad)
+        public Projectile(Texture2D tex, Vector2 pos, float rad, bool friendly)
         {
             base.colour = Color.White;
             base.tex = tex;
             size = new Vector2(25, 25);
             base.pos = pos;
             base.rad = rad;
+            base.friendly = friendly;
+            isBullet = true;
+
             vel = new Vector2(0, 0);
         }
         public override void Update()

@@ -25,6 +25,9 @@ namespace Time_Pilot
             size = new Vector2(72, 72);
             base.pos = pos;
             base.rad = rad;
+            friendly = true;
+            isBullet = false;
+
             vel = new Vector2(0, 0);
         }
         public override void Update()
@@ -41,7 +44,7 @@ namespace Time_Pilot
 
             if(mouseState.LeftButton == ButtonState.Pressed && cooldown >= reload)
             {
-                game.Shoot(pos, rad);
+                game.Shoot(pos, rad, true);
                 cooldown = 0;
             }
             cooldown++;

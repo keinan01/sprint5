@@ -21,6 +21,8 @@ namespace Time_Pilot
         public static Game1 game;
         public bool removed = false;
         public static Plane player;
+        public bool friendly;
+        public bool isBullet;
         public Plane()
         {
 
@@ -35,6 +37,10 @@ namespace Time_Pilot
         public virtual void Update()
         {
             pos += vel;
+        }
+        public bool collides(Plane other)
+        {
+            return new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y).Intersects(new Rectangle((int)other.pos.X, (int)other.pos.Y, (int)other.size.X, (int)other.size.Y));
         }
     }
 }
